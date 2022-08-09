@@ -1,22 +1,21 @@
-import { useState } from "react";
-
-const menuItems = [
-  {name: "Angus Burger", price: 8.99, category: 'burger'},
-  {name: "Tuna Steak Burger", price: 15.00, category: 'burger'},
-  {name: "Bacon Burger", price: 11.50, category: 'burger'},
-  {name: "Southwest Chicken Burger", price: 9.99, category: 'burger'},
-  {name: "Mozzarella Burger", price: 12.50, category: 'burger'},
-  {name: "Cesar Salad", price: 6.50, category: 'salad'},
-  {name: "BBQ Chicken Salad", price: 13.99, category: 'salad'},
-  {name: "Garden Salad", price: 9.99, category: 'salad'},
-  {name: "Veggie Lasagna", price: 17.99, category: 'pasta'},
-  {name: "Spaghetti & Meatballs", price: 17.99, category: 'pasta'},
-  {name: "Fettuccine Alfredo", price: 17.99, category: 'pasta'},
-];
+import { useEffect, useState } from "react";
+import alanBtn from '@alan-ai/alan-sdk-web';
 
 function App() {
 
-  const [cart, setCart] = useState([])
+  const [cart, setCart] = useState([]);
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(()=> {
+    alanBtn({
+      key: '5e65a85b8f9b0b587fcdbf0f7182f5a72e956eca572e1d8b807a3e2338fdd0dc/stage',
+      onCommand: (commandData) => {
+        if (commandData.command === 'getMenu') {
+          setMenuItems(commandData.data)
+        }
+      },
+  })
+  }, [])
 
   const addToCart = (menuItems) => {
     setCart((oldCart) =>{
@@ -26,7 +25,7 @@ function App() {
   
   return (
     <div className="App">
-      {menuItems.map((menuItems) => (
+     {menuItems.map((menuItems) => (
         <li key={menuItems.name}>
           {menuItems.name} - {menuItems.price} - {menuItems.category}
           <button onClick={()=> addToCart(menuItems)}>add to cart</button>
